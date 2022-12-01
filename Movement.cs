@@ -4,10 +4,19 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+
+    /* PARAMETERS - for tuning, typicaliy set in the editor
+     *  CAHCE - e.g referencis for readibility  or speed 
+     *  State -  private instance (member) variables
+     */
+
     [SerializeField] float motorThrust = 100f;
     [SerializeField] float rotationThrust = 1f;
+    [SerializeField] AudioClip mainEngine;
+
     Rigidbody myRigidBody;
     AudioSource mySoundSource;
+
 
 
     void Start()
@@ -30,7 +39,7 @@ public class Movement : MonoBehaviour
 
             if (!mySoundSource.isPlaying)
             {
-                mySoundSource.Play();
+                mySoundSource.PlayOneShot(mainEngine);
             }
         }
         else
