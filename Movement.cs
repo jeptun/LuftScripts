@@ -13,6 +13,7 @@ public class Movement : MonoBehaviour
     [SerializeField] float motorThrust = 100f;
     [SerializeField] float rotationThrust = 1f;
     [SerializeField] AudioClip mainEngine;
+    [SerializeField] ParticleSystem mainEngineParticle;
 
     Rigidbody myRigidBody;
     AudioSource mySoundSource;
@@ -35,18 +36,12 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            myRigidBody.AddRelativeForce(Vector3.up * motorThrust * Time.deltaTime);
-
-            if (!mySoundSource.isPlaying)
-            {
-                mySoundSource.PlayOneShot(mainEngine);
-            }
+            StartThrusting();
         }
         else
         {
-            mySoundSource.Stop();
+            StopThrusting();
         }
-       
     }
     void ProcessRotation()
     {
@@ -59,7 +54,21 @@ public class Movement : MonoBehaviour
             ApplyRotation(-rotationThrust);
         }
     }
+    private void StartThrusting()
+    {
+        myRigidBody.AddRelativeForce(Vector3.up * motorThrust * Time.deltaTime);
 
+        if (!mySoundSource.isPlaying)
+        {
+            mainEngineParticle.Play();
+            mySoundSource.PlayOneShot(mainEngine);
+        }
+    }
+    private void StopThrusting()
+    {
+        mainEngineParticle.Stop();
+        mySoundSource.Stop();
+    }
     public void ApplyRotation(float rotationThisFrame)
     {
         myRigidBody.freezeRotation = true;      // umozni manualni rotaci
