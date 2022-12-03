@@ -18,15 +18,14 @@ public class Movement : MonoBehaviour
     Rigidbody myRigidBody;
     AudioSource mySoundSource;
 
-
-
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
         mySoundSource = GetComponent<AudioSource>();
+      
     }
 
-
+  
     void Update()
     {
         ProcessThrust();
@@ -75,4 +74,5 @@ public class Movement : MonoBehaviour
         transform.Rotate(rotationThisFrame * Time.deltaTime * Vector3.forward);
         myRigidBody.freezeRotation = false; // zakaze manualni rotaci
     }
+
 }
