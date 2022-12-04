@@ -60,7 +60,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-            mySoundSource.PlayOneShot(mainEngine);
+             mySoundSource.PlayOneShot(mainEngine);
         }
     }
     private void StopThrusting()
