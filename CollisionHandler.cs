@@ -32,9 +32,9 @@ public class CollisionHandler : MonoBehaviour
                 FinishSequence();
                 Debug.Log("Finish");
                 break;
-            //case "Fuel":
-            //    Debug.Log("Fuel");
-            //    break;
+            case "Fuel":
+                Debug.Log("Fuel");
+                break;
             default:
                 StartCrashSequence();
                 Debug.Log("Sorry");

@@ -14,6 +14,7 @@ public class Movement : MonoBehaviour
     [SerializeField] float rotationThrust = 1f;
     [SerializeField] AudioClip mainEngine;
     [SerializeField] ParticleSystem mainEngineParticle;
+    
 
     Rigidbody myRigidBody;
     AudioSource mySoundSource;
@@ -26,7 +27,7 @@ public class Movement : MonoBehaviour
     }
 
   
-    void Update()
+    void FixedUpdate()
     {
         ProcessThrust();
         ProcessRotation();
@@ -55,7 +56,7 @@ public class Movement : MonoBehaviour
     }
     private void StartThrusting()
     {
-        myRigidBody.AddRelativeForce(Vector3.up * motorThrust * Time.deltaTime);
+        myRigidBody.AddRelativeForce(Vector3.up * motorThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
         {
