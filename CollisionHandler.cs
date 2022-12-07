@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class CollisionHandler : MonoBehaviour
 {
+
+
     [SerializeField] float LevelLoadDelay = 1f;
     [SerializeField] float delayLevelFinishTime = 2f;
     [SerializeField] AudioClip success;
@@ -15,11 +17,11 @@ public class CollisionHandler : MonoBehaviour
     AudioSource audioSource;
     bool isTransitioning = false;
 
-    public float Gas = 100.0f;
-    public float MaxGas = 100.0f;
-    [SerializeField] Text UIGas;
+    //public float Gas = 100.0f;
+    //public float MaxGas = 100.0f;
+    //[SerializeField] Text UIGas;
 
-    private const float GasDecreasePerFrame = 1.0f;
+    //private const float GasDecreasePerFrame = 1.0f;
 
     private void Start()
     {
@@ -41,8 +43,6 @@ public class CollisionHandler : MonoBehaviour
                 break;
             case "Fuel":
                 Debug.Log("Fuel");
-                GetGas();
-                Debug.Log(Gas);
                 break;
             case "Gold":
                 Debug.Log("gold");
@@ -54,35 +54,37 @@ public class CollisionHandler : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Gas != 0)
-        {
-            bool isFlying = Input.GetKey(KeyCode.Space);
-            if (isFlying)
-            {
-                Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
-            }
+    //private void GetGas()
+    //{
+    //    float gasIncrement = Gas + 1;
+    //    Gas = gasIncrement;
+    //    return;
+    //}
 
-            UIGas.text = ((float)Gas).ToString();
-            //else if (Gas < MaxGas)
-            //{
-            //    if (GasRegenTimer >= GasTimeToRegen)
-            //        Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
-            //    else
-            //        GasRegenTimer += Time.deltaTime;
-            //}
-            Debug.Log("Hodnota Gasu" + Gas);
-        }
+
+    //private void Update()
+    //{
+    //    if (Gas != 0)
+    //    {
+    //        bool isFlying = Input.GetKey(KeyCode.Space);
+    //        if (isFlying)
+    //        {
+    //            Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
+    //        }
+
+    //        UIGas.text = ((float)Gas).ToString();
+    //        //else if (Gas < MaxGas)
+    //        //{
+    //        //    if (GasRegenTimer >= GasTimeToRegen)
+    //        //        Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
+    //        //    else
+    //        //        GasRegenTimer += Time.deltaTime;
+    //        //}
+    //        Debug.Log("Hodnota Gasu" + Gas);
+    //    }
     
-    }
+    //}
 
-    private void GetGas()
-    {
-        float gasIncrement = Gas + 1;
-        Gas = gasIncrement;
-        return;
-    }
 
     //Todo Sound Particle
     void StartCrashSequence()

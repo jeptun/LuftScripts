@@ -18,11 +18,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] ParticleSystem mainEngineParticle;
 
 
-    Rigidbody myRigidBody;
-    AudioSource mySoundSource;
-
-    //-------------------------------------------------------
-
     [SerializeField] float LevelLoadDelay = 1f;
     [SerializeField] float delayLevelFinishTime = 2f;
     [SerializeField] AudioClip success;
@@ -31,15 +26,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] ParticleSystem successParticles;
     [SerializeField] ParticleSystem crashParticles;
 
-    //Movement movement;
-    //[SerializeField] GameObject Movement;
+    [SerializeField] Text UIGas;
 
+    Rigidbody myRigidBody;
+    AudioSource mySoundSource;
     AudioSource audioSource;
-    bool isTransitioning = false;
 
+    bool isTransitioning = false;
     public float Gas = 100.0f;
     public float MaxGas = 100.0f;
-    [SerializeField] Text UIGas;
 
     private const float GasDecreasePerFrame = 1.0f;
 
@@ -48,13 +43,13 @@ public class GameManager : MonoBehaviour
         myRigidBody = GetComponent<Rigidbody>();
         mySoundSource = GetComponent<AudioSource>();
         audioSource = GetComponent<AudioSource>();
-
     }
 
-
-    void FixedUpdate()
+    private void GetGas()
     {
-
+        float gasIncrement = Gas + 1;
+        Gas = gasIncrement;
+        return;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -88,9 +83,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        ProcessThrust();
-        ProcessRotation();
-        bool isFlying = Input.GetKey(KeyCode.Space);
+        if (Gas != 0)
+        {
+            bool isFlying = Input.GetKey(KeyCode.Space);
             if (isFlying)
             {
                 Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
@@ -104,10 +99,16 @@ public class GameManager : MonoBehaviour
             //    else
             //        GasRegenTimer += Time.deltaTime;
             //}
-          //  Debug.Log("Hodnota Gasu" + Gas);
+            Debug.Log("Hodnota Gasu" + Gas);
+        }
 
     }
 
+    void FixedUpdate()
+    {
+        ProcessThrust();
+        ProcessRotation();
+    }
     void ProcessThrust()
     {
         if (Input.GetKey(KeyCode.Space))
@@ -130,7 +131,7 @@ public class GameManager : MonoBehaviour
             ApplyRotation(-rotationThrust);
         }
     }
-    private void StartThrusting()
+     void StartThrusting()
     {
         myRigidBody.AddRelativeForce(Vector3.up * motorThrust * Time.fixedDeltaTime);
 
@@ -140,7 +141,7 @@ public class GameManager : MonoBehaviour
             mySoundSource.PlayOneShot(mainEngine);
         }
     }
-    private void StopThrusting()
+     void StopThrusting()
     {
         mainEngineParticle.Stop();
         mySoundSource.Stop();
@@ -152,21 +153,13 @@ public class GameManager : MonoBehaviour
         myRigidBody.freezeRotation = false; // zakaze manualni rotaci
     }
 
-    private void GetGas()
-    {
-        float gasIncrement = Gas + 1;
-        Gas = gasIncrement;
-        return;
-    }
-
-    //Todo Sound Particle
     void StartCrashSequence()
     {
         isTransitioning = true;
         audioSource.Stop();
         crashParticles.Play();
         audioSource.PlayOneShot(crash);
-        GetComponent<GameManager>().enabled = false;
+        GetComponent<Movement>().enabled = false;
         Invoke(nameof(ReloadLevel), LevelLoadDelay);
     }
     void FinishSequence()
@@ -175,7 +168,7 @@ public class GameManager : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(success);
         successParticles.Play();
-        GetComponent<GameManager>().enabled = false;
+        GetComponent<Movement>().enabled = false;
         Invoke(nameof(NextLevel), delayLevelFinishTime);
     }
     void NextLevel()
@@ -194,4 +187,5 @@ public class GameManager : MonoBehaviour
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex);
     }
+
 }
