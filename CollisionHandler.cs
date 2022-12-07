@@ -12,9 +12,6 @@ public class CollisionHandler : MonoBehaviour
     [SerializeField] ParticleSystem successParticles;
     [SerializeField] ParticleSystem crashParticles;
 
-    //Movement movement;
-    //[SerializeField] GameObject Movement;
-
     AudioSource audioSource;
     bool isTransitioning = false;
 
