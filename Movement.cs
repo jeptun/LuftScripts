@@ -16,18 +16,22 @@ public class Movement : MonoBehaviour
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip mainEngineOff;
     [SerializeField] ParticleSystem mainEngineParticle;
-    
-
+    [SerializeField] Text UIGas;
+    //---------------------------------------------------------
     Rigidbody myRigidBody;
     AudioSource mySoundSource;
-
-    //Fuel
-
+    //Fuel-----------------------------------------------------
+    //
     public float Gas = 100.0f;
     public float MaxGas = 100.0f;
-    [SerializeField] Text UIGas;
+    //---------------------------------------------------------
+    private float GasRegenTimer = 0.0f;
+    //---------------------------------------------------------
 
+    //TODO->Predelat public na private const
     private const float GasDecreasePerFrame = 1.0f;
+    private const float GasIncreasePerFrame = 1.0f;
+    private const float GasTimeToRegen = 3.0f;
 
     void Start()
     {
@@ -70,25 +74,28 @@ public class Movement : MonoBehaviour
         {
             mySoundSource.Pause();
             mainEngineParticle.Stop();
+           // mySoundSource.PlayOneShot(mainEngineOff);
         }
         ProcessRotation();
         //mySoundSource.Pause();
         //mainEngineParticle.Stop();
-        //  mySoundSource.PlayOneShot(mainEngineOff);
+        
         bool isFlying = Input.GetKey(KeyCode.Space);
         if (isFlying)
         {
             Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
         }
 
-        UIGas.text = ((float)Gas).ToString();
         //else if (Gas < MaxGas)
         //{
         //    if (GasRegenTimer >= GasTimeToRegen)
+        //    {
         //        Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
+        //    }
         //    else
         //        GasRegenTimer += Time.deltaTime;
         //}
+        UIGas.text = ((float)Gas).ToString();
     }
 
     void ProcessThrust()

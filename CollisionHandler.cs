@@ -17,12 +17,6 @@ public class CollisionHandler : MonoBehaviour
     AudioSource audioSource;
     bool isTransitioning = false;
 
-    //public float Gas = 100.0f;
-    //public float MaxGas = 100.0f;
-    //[SerializeField] Text UIGas;
-
-    //private const float GasDecreasePerFrame = 1.0f;
-
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();    
@@ -53,38 +47,6 @@ public class CollisionHandler : MonoBehaviour
                 break;
         }
     }
-
-    //private void GetGas()
-    //{
-    //    float gasIncrement = Gas + 1;
-    //    Gas = gasIncrement;
-    //    return;
-    //}
-
-
-    //private void Update()
-    //{
-    //    if (Gas != 0)
-    //    {
-    //        bool isFlying = Input.GetKey(KeyCode.Space);
-    //        if (isFlying)
-    //        {
-    //            Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
-    //        }
-
-    //        UIGas.text = ((float)Gas).ToString();
-    //        //else if (Gas < MaxGas)
-    //        //{
-    //        //    if (GasRegenTimer >= GasTimeToRegen)
-    //        //        Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
-    //        //    else
-    //        //        GasRegenTimer += Time.deltaTime;
-    //        //}
-    //        Debug.Log("Hodnota Gasu" + Gas);
-    //    }
-    
-    //}
-
 
     //Todo Sound Particle
     void StartCrashSequence()
