@@ -1,9 +1,28 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class CollisionHandler : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
+
+    /* PARAMETERS - for tuning, typicaliy set in the editor
+     *  CAHCE - e.g referencis for readibility  or speed 
+     *  State -  private instance (member) variables
+     */
+
+    [SerializeField] float motorThrust = 100f;
+    [SerializeField] float rotationThrust = 1f;
+    [SerializeField] AudioClip mainEngine;
+    [SerializeField] ParticleSystem mainEngineParticle;
+
+
+    Rigidbody myRigidBody;
+    AudioSource mySoundSource;
+
+    //-------------------------------------------------------
+
     [SerializeField] float LevelLoadDelay = 1f;
     [SerializeField] float delayLevelFinishTime = 2f;
     [SerializeField] AudioClip success;
@@ -24,9 +43,18 @@ public class CollisionHandler : MonoBehaviour
 
     private const float GasDecreasePerFrame = 1.0f;
 
-    private void Start()
+    void Start()
     {
-        audioSource = GetComponent<AudioSource>();    
+        myRigidBody = GetComponent<Rigidbody>();
+        mySoundSource = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
+
+    }
+
+
+    void FixedUpdate()
+    {
+
     }
 
     void OnCollisionEnter(Collision collision)
@@ -57,11 +85,12 @@ public class CollisionHandler : MonoBehaviour
         }
     }
 
+
     private void Update()
     {
-        if (Gas != 0)
-        {
-            bool isFlying = Input.GetKey(KeyCode.Space);
+        ProcessThrust();
+        ProcessRotation();
+        bool isFlying = Input.GetKey(KeyCode.Space);
             if (isFlying)
             {
                 Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
@@ -75,9 +104,52 @@ public class CollisionHandler : MonoBehaviour
             //    else
             //        GasRegenTimer += Time.deltaTime;
             //}
-            Debug.Log("Hodnota Gasu" + Gas);
+          //  Debug.Log("Hodnota Gasu" + Gas);
+
+    }
+
+    void ProcessThrust()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            StartThrusting();
         }
-    
+        else
+        {
+            StopThrusting();
+        }
+    }
+    void ProcessRotation()
+    {
+        if (Input.GetKey(KeyCode.A))
+        {
+            ApplyRotation(rotationThrust);
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            ApplyRotation(-rotationThrust);
+        }
+    }
+    private void StartThrusting()
+    {
+        myRigidBody.AddRelativeForce(Vector3.up * motorThrust * Time.fixedDeltaTime);
+
+        if (!mySoundSource.isPlaying)
+        {
+            mainEngineParticle.Play();
+            mySoundSource.PlayOneShot(mainEngine);
+        }
+    }
+    private void StopThrusting()
+    {
+        mainEngineParticle.Stop();
+        mySoundSource.Stop();
+    }
+    public void ApplyRotation(float rotationThisFrame)
+    {
+        myRigidBody.freezeRotation = true;      // umozni manualni rotaci
+        transform.Rotate(rotationThisFrame * Time.deltaTime * Vector3.forward);
+        myRigidBody.freezeRotation = false; // zakaze manualni rotaci
     }
 
     private void GetGas()
@@ -94,8 +166,8 @@ public class CollisionHandler : MonoBehaviour
         audioSource.Stop();
         crashParticles.Play();
         audioSource.PlayOneShot(crash);
-        GetComponent<Movement>().enabled = false;
-       Invoke(nameof(ReloadLevel), LevelLoadDelay);
+        GetComponent<GameManager>().enabled = false;
+        Invoke(nameof(ReloadLevel), LevelLoadDelay);
     }
     void FinishSequence()
     {
@@ -103,7 +175,7 @@ public class CollisionHandler : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(success);
         successParticles.Play();
-        GetComponent<Movement>().enabled = false;
+        GetComponent<GameManager>().enabled = false;
         Invoke(nameof(NextLevel), delayLevelFinishTime);
     }
     void NextLevel()
@@ -112,7 +184,7 @@ public class CollisionHandler : MonoBehaviour
         int nextSceneIndex = currentSceneIndex + 1;
         if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
         {
-           nextSceneIndex = 0 ;
+            nextSceneIndex = 0;
         }
         SceneManager.LoadScene(nextSceneIndex);
     }
@@ -120,6 +192,6 @@ public class CollisionHandler : MonoBehaviour
     void ReloadLevel()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentSceneIndex);     
+        SceneManager.LoadScene(currentSceneIndex);
     }
 }

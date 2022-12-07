@@ -7,21 +7,20 @@ using UnityEngine.UI;
 //TODO interval casu
 public class Fuel : MonoBehaviour
 {
-   [SerializeField] float Gas = 100f;
 
-   [SerializeField] float changePerSecond;
 
-   [SerializeField] Text UIGas;
+    // Start is called before the first frame update
+    public float Gas = 100.0f;
+    public float MaxGas = 100.0f;
+    [SerializeField] Text UIGas;
+    //---------------------------------------------------------
+    private const float GasDecreasePerFrame = 1.0f;
 
-    private float variableToChange;
-    private float startTime;
-    float minusTime;
-    private float myTime;
-
+    //---------------------------------------------------------
 
     void OnCollisionEnter(Collision collision)
     {
-        switch(collision.gameObject.tag )
+        switch (collision.gameObject.tag)
         {
             case "Fuel":
                 Debug.Log("Fuel");
@@ -30,7 +29,7 @@ public class Fuel : MonoBehaviour
                 break;
             case "Gold":
                 Debug.Log("gold");
-                 break;
+                break;
         }
     }
     private void GetGas()
@@ -40,38 +39,24 @@ public class Fuel : MonoBehaviour
         return;
     }
 
-    void Update()
+
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        bool isFlying = Input.GetKey(KeyCode.Space);
+        if (isFlying)
         {
-            
-            variableToChange += changePerSecond * Time.deltaTime;
-            Gas -= variableToChange ;
-             Debug.Log("vari " + variableToChange);
-
-           // minusTime = Time.time - startTime;
-           // Debug.Log(minusTime + "minus1");
-           // //Gas -= minusTime;
-           //// Debug.Log("gasTime" +  Gas);
-           // if (Time.time > 0)
-           // {
-           //     myTime = Time.time * 0;
-           //     minusTime = myTime;
-           //     Debug.Log(minusTime + "minustime2");
-                
-           // }
-           // Debug.Log(minusTime + "minustime3");
+            Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
         }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            Debug.Log("Space key was released.");
-        }
-      
 
         UIGas.text = ((float)Gas).ToString();
-       // minusTime = 0;
-     
+        //else if (Gas < MaxGas)
+        //{
+        //    if (GasRegenTimer >= GasTimeToRegen)
+        //        Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
+        //    else
+        //        GasRegenTimer += Time.deltaTime;
+        //}
+        Debug.Log("Hodnota Gasu" + Gas);
     }
 
 }

@@ -6,13 +6,11 @@ using UnityEngine.UI;
 public class FuelTest : MonoBehaviour
 {
     // Start is called before the first frame update
-public float Gas = 100.0f;
-public float MaxGas = 100.0f;
-[SerializeField] Text UIGas;
-    //---------------------------------------------------------
-    private const float GasDecreasePerFrame = 1.0f;
+    public float Gas = 100.0f;
+    public float MaxGas = 100.0f;
+    [SerializeField] Text UIGas;
 
-    //---------------------------------------------------------
+    private const float GasDecreasePerFrame = 1.0f;
 
     void OnCollisionEnter(Collision collision)
     {
