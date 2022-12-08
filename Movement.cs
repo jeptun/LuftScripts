@@ -15,6 +15,7 @@ public class Movement : MonoBehaviour
     [SerializeField] float rotationThrust = 1f;
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip mainEngineOff;
+    [SerializeField] AudioClip crash;
     [SerializeField] ParticleSystem mainEngineParticle;
     [SerializeField] Text UIGas;
     //---------------------------------------------------------
@@ -37,7 +38,6 @@ public class Movement : MonoBehaviour
     {
         myRigidBody = GetComponent<Rigidbody>();
         mySoundSource = GetComponent<AudioSource>();
-      
     }
 
 
@@ -55,47 +55,48 @@ public class Movement : MonoBehaviour
                 break;
         }
     }
-    private void GetGas()
+    public void GetGas()
     {
-        float gasIncrement = Gas + 1;
-        Gas = gasIncrement;
-        return;
+        //float gasIncrement = Gas + 1;
+        //Gas = gasIncrement;
+        //return;
+        if (Gas < MaxGas)
+        {
+
+            //Gas += GasIncreasePerFrame * Time.time;
+            if (GasRegenTimer >= GasTimeToRegen)
+            {
+                Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.time), 0.0f, MaxGas);
+                Debug.Log((GasIncreasePerFrame * Time.time) + "Druhy deb");
+            }
+            else
+                GasRegenTimer += Time.time;
+        }
+       UIGas.text = ((float)Gas).ToString();
+
     }
 
     void FixedUpdate()
     {
+        bool isFlying = Input.GetKey(KeyCode.Space);
         if (Gas != 0)
         {
             mySoundSource.UnPause();
             ProcessThrust();
-            
         }
         else if (Gas == 0)
         {
             mySoundSource.Pause();
             mainEngineParticle.Stop();
-           // mySoundSource.PlayOneShot(mainEngineOff);
         }
-        ProcessRotation();
-        //mySoundSource.Pause();
-        //mainEngineParticle.Stop();
-        
-        bool isFlying = Input.GetKey(KeyCode.Space);
+
+        ProcessRotation();   
+
         if (isFlying)
         {
             Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
         }
-
-        //else if (Gas < MaxGas)
-        //{
-        //    if (GasRegenTimer >= GasTimeToRegen)
-        //    {
-        //        Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
-        //    }
-        //    else
-        //        GasRegenTimer += Time.deltaTime;
-        //}
-        UIGas.text = ((float)Gas).ToString();
+        UIGas.text = Gas.ToString();
     }
 
     void ProcessThrust()
@@ -108,11 +109,7 @@ public class Movement : MonoBehaviour
         else
         {
             StopThrusting();
-        }
-         //mySoundSource.Stop();
-         //mainEngineParticle.Stop();
-         //mySoundSource.PlayOneShot(mainEngineOff);
-     
+        }  
     }
     void ProcessRotation()
     {
@@ -125,8 +122,6 @@ public class Movement : MonoBehaviour
             ApplyRotation(-rotationThrust);
         }
     }
-
-
     private void StartThrusting()
     {
         myRigidBody.AddRelativeForce(Vector3.up * motorThrust * Time.fixedDeltaTime);
@@ -148,5 +143,21 @@ public class Movement : MonoBehaviour
         transform.Rotate(rotationThisFrame * Time.deltaTime * Vector3.forward);
         myRigidBody.freezeRotation = false; // zakaze manualni rotaci
     }
+
+    //TODO dodelat zvuk
+
+    //public void GassOffSound()
+    //{
+    //    if (Gas != 0)
+    //    {
+    //        mySoundSource.PlayOneShot(crash);
+    //        return;
+    //    }
+    //    else
+    //    {
+    //        mySoundSource.Pause();
+    //    }
+    
+    //}
 
 }
