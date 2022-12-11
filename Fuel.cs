@@ -1,62 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-
-//TODO interval casu
 public class Fuel : MonoBehaviour
 {
+    // referenèní promìnná na palivovou stanici
+    public GameObject fuelStation;
 
+    // promìnná pro uložení aktuálního stavu paliva vozidla
+    private float fuelLevel = 10f;
 
-    // Start is called before the first frame update
-    public float Gas = 100.0f;
-    public float MaxGas = 100.0f;
-    [SerializeField] Text UIGas;
-    //---------------------------------------------------------
-    private const float GasDecreasePerFrame = 1.0f;
-
-    //---------------------------------------------------------
-
-    void OnCollisionEnter(Collision collision)
+    void Update()
     {
-        switch (collision.gameObject.tag)
+        // zjištìní, zda vozidlo dotýká palivové stanice
+        if (IsTouchingFuelStation())
         {
-            case "Fuel":
-                Debug.Log("Fuel");
-                GetGas();
-                Debug.Log(Gas);
-                break;
-            case "Gold":
-                Debug.Log("gold");
-                break;
+            // pokud ano, zvýší se stav paliva pozvolna
+            fuelLevel = Mathf.Min(fuelLevel + Time.deltaTime, 100f);
         }
     }
-    private void GetGas()
+
+    // metoda pro zjištìní, zda vozidlo dotýká palivové stanice
+    bool IsTouchingFuelStation()
     {
-        float gasIncrement = Gas + 1;
-        Gas = gasIncrement;
-        return;
+        // získání Collider komponenty vozidla
+        Collider vehicleCollider = GetComponent<Collider>();
+
+        // získání Collider komponenty palivové stanice
+        Collider fuelStationCollider = fuelStation.GetComponent<Collider>();
+
+        // zjištìní, zda vozidlo a palivová stanice se dotýkají
+        return vehicleCollider.bounds.Intersects(fuelStationCollider.bounds);
+
     }
-
-
-    private void Update()
-    {
-        bool isFlying = Input.GetKey(KeyCode.Space);
-        if (isFlying)
-        {
-            Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
-        }
-
-        UIGas.text = ((float)Gas).ToString();
-        //else if (Gas < MaxGas)
-        //{
-        //    if (GasRegenTimer >= GasTimeToRegen)
-        //        Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
-        //    else
-        //        GasRegenTimer += Time.deltaTime;
-        //}
-        Debug.Log("Hodnota Gasu" + Gas);
-    }
-
 }

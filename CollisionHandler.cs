@@ -17,9 +17,10 @@ public class CollisionHandler : MonoBehaviour
     AudioSource audioSource;
     bool isTransitioning = false;
 
+    //Movement playerScoreInstance = null;
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();    
+        audioSource = GetComponent<AudioSource>();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -40,6 +41,9 @@ public class CollisionHandler : MonoBehaviour
                 break;
             case "Gold":
                 Debug.Log("gold");
+                break;
+            case "Wind":
+                Debug.Log("Wind");
                 break;
             default:
                 StartCrashSequence();

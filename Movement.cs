@@ -18,26 +18,54 @@ public class Movement : MonoBehaviour
     [SerializeField] AudioClip crash;
     [SerializeField] ParticleSystem mainEngineParticle;
     [SerializeField] Text UIGas;
-    //---------------------------------------------------------
-    Rigidbody myRigidBody;
-    AudioSource mySoundSource;
+    
+
     //Fuel-----------------------------------------------------
     //
     public float Gas = 100.0f;
     public float MaxGas = 100.0f;
-    //---------------------------------------------------------
-    private float GasRegenTimer = 0.0f;
-    //---------------------------------------------------------
+    public int playerScore = 0;
 
+    public GameObject fuelStation;
+    //---------------------------------------------------------
     //TODO->Predelat public na private const
     private const float GasDecreasePerFrame = 1.0f;
-    private const float GasIncreasePerFrame = 1.0f;
-    private const float GasTimeToRegen = 3.0f;
+    
+    //---------------------------------------------------------
+    Rigidbody myRigidBody;
+    AudioSource mySoundSource;
+
+
+    [System.Serializable]
+    public class Data
+    {
+        public GameObject obj;
+        
+    }
+    public Data[] dataArray;
+
 
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
         mySoundSource = GetComponent<AudioSource>();
+
+        var objs = GameObject.FindGameObjectsWithTag("Fuel");
+
+        // create new Data array with the same number of elements as we have in the objs array.
+        dataArray = new Data[objs.Length];
+
+                for (int i = 0; i < objs.Length; i++)
+             {
+             // create new Data object
+             var tmp = new Data();
+ 
+             // set the values you want.
+             tmp.obj = objs[i];
+ 
+             // store the Data object in our dataArray
+             dataArray[i] = tmp;
+             }
     }
 
 
@@ -47,37 +75,15 @@ public class Movement : MonoBehaviour
         {
             case "Fuel":
                 Debug.Log("Fuel");
-                GetGas();
-                Debug.Log(Gas);
                 break;
             case "Gold":
                 Debug.Log("gold");
                 break;
         }
     }
-    public void GetGas()
-    {
-        //float gasIncrement = Gas + 1;
-        //Gas = gasIncrement;
-        //return;
-        if (Gas < MaxGas)
-        {
-
-            //Gas += GasIncreasePerFrame * Time.time;
-            if (GasRegenTimer >= GasTimeToRegen)
-            {
-                Gas = Mathf.Clamp(Gas + (GasIncreasePerFrame * Time.time), 0.0f, MaxGas);
-                Debug.Log((GasIncreasePerFrame * Time.time) + "Druhy deb");
-            }
-            else
-                GasRegenTimer += Time.time;
-        }
-       UIGas.text = ((float)Gas).ToString();
-
-    }
-
     void FixedUpdate()
     {
+      
         bool isFlying = Input.GetKey(KeyCode.Space);
         if (Gas != 0)
         {
@@ -89,14 +95,22 @@ public class Movement : MonoBehaviour
             mySoundSource.Pause();
             mainEngineParticle.Stop();
         }
-
         ProcessRotation();   
 
         if (isFlying)
         {
             Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
         }
+
+        // pokud se vozidlo dotýká palivové stanice a má ménì paliva než je plná hodnota
+        if (IsTouchingFuelStation() && Gas < MaxGas)
+        {
+            // pokud ano, zvýší se stav paliva pozvolna
+            Gas = Mathf.Min(Gas + Time.deltaTime, 100f);
+        }
+
         UIGas.text = Gas.ToString();
+   
     }
 
     void ProcessThrust()
@@ -143,21 +157,16 @@ public class Movement : MonoBehaviour
         transform.Rotate(rotationThisFrame * Time.deltaTime * Vector3.forward);
         myRigidBody.freezeRotation = false; // zakaze manualni rotaci
     }
+    bool IsTouchingFuelStation()
+    {
+        // získání Collider komponenty vozidla
+        Collider vehicleCollider = GetComponent<Collider>();
 
-    //TODO dodelat zvuk
+        // získání Collider komponenty palivové stanice
+        Collider fuelStationCollider = fuelStation.GetComponent<Collider>();
 
-    //public void GassOffSound()
-    //{
-    //    if (Gas != 0)
-    //    {
-    //        mySoundSource.PlayOneShot(crash);
-    //        return;
-    //    }
-    //    else
-    //    {
-    //        mySoundSource.Pause();
-    //    }
-    
-    //}
-
+        // zjištìní, zda vozidlo a palivová stanice se dotýkají
+        return vehicleCollider.bounds.Intersects(fuelStationCollider.bounds);
+    }
+ 
 }
