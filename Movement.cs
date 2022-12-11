@@ -40,7 +40,7 @@ public class Movement : MonoBehaviour
     public class Data
     {
         public GameObject obj;
-        
+        public bool objectBool;
     }
     public Data[] dataArray;
 
@@ -62,10 +62,12 @@ public class Movement : MonoBehaviour
  
              // set the values you want.
              tmp.obj = objs[i];
+             tmp.objectBool = false;
  
              // store the Data object in our dataArray
              dataArray[i] = tmp;
              }
+
     }
 
 
