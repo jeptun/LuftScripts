@@ -1,3 +1,4 @@
+using GasStation;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,14 +12,13 @@ public class Movement : MonoBehaviour
      *  State -  private instance (member) variables
      */
 
-    [SerializeField] float motorThrust = 100f;
+    [SerializeField] float motorThrust = 500f;
     [SerializeField] float rotationThrust = 1f;
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip mainEngineOff;
     [SerializeField] AudioClip crash;
     [SerializeField] ParticleSystem mainEngineParticle;
     [SerializeField] Text UIGas;
-    
 
     //Fuel-----------------------------------------------------
     //
@@ -28,45 +28,60 @@ public class Movement : MonoBehaviour
 
     public GameObject fuelStation;
     //---------------------------------------------------------
-    //TODO->Predelat public na private const
+   
     private const float GasDecreasePerFrame = 1.0f;
     
     //---------------------------------------------------------
     Rigidbody myRigidBody;
     AudioSource mySoundSource;
 
+    public Rigidbody rb;
+    public float forceX;
+    public float forceY;
+    public float forceZ;
+ 
 
-    [System.Serializable]
-    public class Data
-    {
-        public GameObject obj;
-        public bool objectBool;
-    }
-    public Data[] dataArray;
 
+
+    //public GameObject[] objs;
+
+    //private int myWindZone;
+
+    //TODO Dodìlat Array cyklus pro fuelStation
+    //[System.Serializable]
+    //public class Data
+    //{
+    //    public GameObject obj;
+    //    public bool objectBool;
+    //}
+    //public Data[] fuelStation;
+
+    //private void Awake()
+    //{
+    //    myWindZone = LayerMask.NameToLayer("MyWindZone");
+    //}
 
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
         mySoundSource = GetComponent<AudioSource>();
+      
 
-        var objs = GameObject.FindGameObjectsWithTag("Fuel");
-
+        // TODO Dodìlat Array cyklus pro fuelStation
+        // GameObject[] newObjs = new GameObject[objs.Length];
+        // var objs = GameObject.FindGameObjectsWithTag("Fuel");
         // create new Data array with the same number of elements as we have in the objs array.
-        dataArray = new Data[objs.Length];
-
-                for (int i = 0; i < objs.Length; i++)
-             {
-             // create new Data object
-             var tmp = new Data();
- 
-             // set the values you want.
-             tmp.obj = objs[i];
-             tmp.objectBool = false;
- 
-             // store the Data object in our dataArray
-             dataArray[i] = tmp;
-             }
+        // fuelStation = new Data[objs.Length];
+        // for (int i = 0; i < objs.Length; i++)
+        //     {
+        //     create new Data object
+        //     var tmp = new Data();
+        //     set the values you want.
+        //     tmp.obj = objs[i];
+        //     tmp.objectBool = false;
+        //     store the Data object in our dataArray
+        //     fuelStation[i] = tmp;
+        //     }
 
     }
 
@@ -83,10 +98,28 @@ public class Movement : MonoBehaviour
                 break;
         }
     }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+   
+        switch (collider.gameObject.layer)
+        {
+            case 10:
+                Debug.Log("Wind");
+                AddForce();
+                //minusMotorThrust();
+                break;
+            case 6:
+                Debug.Log("Default");
+                //plusMotorThrust();
+                break;
+
+        }
+    }
     void FixedUpdate()
     {
-      
         bool isFlying = Input.GetKey(KeyCode.Space);
+
         if (Gas != 0)
         {
             mySoundSource.UnPause();
@@ -97,6 +130,7 @@ public class Movement : MonoBehaviour
             mySoundSource.Pause();
             mainEngineParticle.Stop();
         }
+
         ProcessRotation();   
 
         if (isFlying)
@@ -112,9 +146,8 @@ public class Movement : MonoBehaviour
         }
 
         UIGas.text = Gas.ToString();
-   
-    }
 
+    }
     void ProcessThrust()
     {
       
@@ -170,5 +203,23 @@ public class Movement : MonoBehaviour
         // zjištìní, zda vozidlo a palivová stanice se dotýkají
         return vehicleCollider.bounds.Intersects(fuelStationCollider.bounds);
     }
- 
+
+    void AddForce()
+    {
+        Debug.Log("AddForce");
+        rb.AddForce(forceX, forceY, forceZ);
+    }
+
+    //void minusMotorThrust()
+    //{
+    //    Debug.Log("minusMotorThrust");
+    //    motorThrust -= 500;
+    //}
+
+    //void plusMotorThrust()
+    //{
+    //    Debug.Log("plusMotorThrust");
+    //    motorThrust += 1000;
+    //}
+
 }

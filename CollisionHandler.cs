@@ -42,9 +42,6 @@ public class CollisionHandler : MonoBehaviour
             case "Gold":
                 Debug.Log("gold");
                 break;
-            case "Wind":
-                Debug.Log("Wind");
-                break;
             default:
                 StartCrashSequence();
                 Debug.Log("Sorry");
