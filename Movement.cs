@@ -26,7 +26,7 @@ public class Movement : MonoBehaviour
     public float MaxGas = 100.0f;
     public int playerScore = 0;
 
-    public GameObject fuelStation;
+    //public GameObject fuelStation;
     //---------------------------------------------------------
    
     private const float GasDecreasePerFrame = 1.0f;
@@ -35,15 +35,22 @@ public class Movement : MonoBehaviour
     Rigidbody myRigidBody;
     AudioSource mySoundSource;
 
-    public Rigidbody rb;
-    public float forceX;
-    public float forceY;
-    public float forceZ;
- 
 
+    [System.Serializable]
+    private struct GasStation
+    {
+        // make sure the name comes first, it'll serve a special purpose (explained below)
+        [SerializeField]
+        private string _name;
+        [SerializeField]
+        private GameObject[] _prefabs;
 
+        public string Name { get { return _name; } }
+        public GameObject[] Prefabs { get { return _prefabs; } }
+    }
 
-    //public GameObject[] objs;
+    [SerializeField]
+    private GasStation[] _gasStation;
 
     //private int myWindZone;
 
@@ -54,35 +61,12 @@ public class Movement : MonoBehaviour
     //    public GameObject obj;
     //    public bool objectBool;
     //}
-    //public Data[] fuelStation;
-
-    //private void Awake()
-    //{
-    //    myWindZone = LayerMask.NameToLayer("MyWindZone");
-    //}
+    //public Data[] objs;
 
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
         mySoundSource = GetComponent<AudioSource>();
-      
-
-        // TODO Dodìlat Array cyklus pro fuelStation
-        // GameObject[] newObjs = new GameObject[objs.Length];
-        // var objs = GameObject.FindGameObjectsWithTag("Fuel");
-        // create new Data array with the same number of elements as we have in the objs array.
-        // fuelStation = new Data[objs.Length];
-        // for (int i = 0; i < objs.Length; i++)
-        //     {
-        //     create new Data object
-        //     var tmp = new Data();
-        //     set the values you want.
-        //     tmp.obj = objs[i];
-        //     tmp.objectBool = false;
-        //     store the Data object in our dataArray
-        //     fuelStation[i] = tmp;
-        //     }
-
     }
 
 
@@ -101,12 +85,10 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-   
         switch (collider.gameObject.layer)
         {
             case 10:
                 Debug.Log("Wind");
-                AddForce();
                 //minusMotorThrust();
                 break;
             case 6:
@@ -139,11 +121,11 @@ public class Movement : MonoBehaviour
         }
 
         // pokud se vozidlo dotýká palivové stanice a má ménì paliva než je plná hodnota
-        if (IsTouchingFuelStation() && Gas < MaxGas)
-        {
-            // pokud ano, zvýší se stav paliva pozvolna
-            Gas = Mathf.Min(Gas + Time.deltaTime, 100f);
-        }
+        //if (IsTouchingFuelStation() && Gas < MaxGas)
+        //{
+        //    // pokud ano, zvýší se stav paliva pozvolna
+        //    Gas = Mathf.Min(Gas + Time.deltaTime, 100f);
+        //}
 
         UIGas.text = Gas.ToString();
 
@@ -192,34 +174,16 @@ public class Movement : MonoBehaviour
         transform.Rotate(rotationThisFrame * Time.deltaTime * Vector3.forward);
         myRigidBody.freezeRotation = false; // zakaze manualni rotaci
     }
-    bool IsTouchingFuelStation()
-    {
-        // získání Collider komponenty vozidla
-        Collider vehicleCollider = GetComponent<Collider>();
-
-        // získání Collider komponenty palivové stanice
-        Collider fuelStationCollider = fuelStation.GetComponent<Collider>();
-
-        // zjištìní, zda vozidlo a palivová stanice se dotýkají
-        return vehicleCollider.bounds.Intersects(fuelStationCollider.bounds);
-    }
-
-    void AddForce()
-    {
-        Debug.Log("AddForce");
-        rb.AddForce(forceX, forceY, forceZ);
-    }
-
-    //void minusMotorThrust()
+    //bool IsTouchingFuelStation()
     //{
-    //    Debug.Log("minusMotorThrust");
-    //    motorThrust -= 500;
-    //}
+    //    // získání Collider komponenty vozidla
+    //    Collider vehicleCollider = GetComponent<Collider>();
 
-    //void plusMotorThrust()
-    //{
-    //    Debug.Log("plusMotorThrust");
-    //    motorThrust += 1000;
+    //    // získání Collider komponenty palivové stanice
+    //    Collider fuelStationCollider = fuelStation.GetComponent<Collider>();
+
+    //    // zjištìní, zda vozidlo a palivová stanice se dotýkají
+    //    return vehicleCollider.bounds.Intersects(fuelStationCollider.bounds);
     //}
 
 }

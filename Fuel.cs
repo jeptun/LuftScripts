@@ -7,9 +7,11 @@ public class Fuel : MonoBehaviour
     // referenèní promìnná na palivovou stanici
     public GameObject vehicle;
     [SerializeField] Text UIGas;
+    public float Gas = 100.0f;
+    public float MaxGas = 100.0f;
 
-    // promìnná pro uložení aktuálního stavu paliva vozidla
-    public float fuelLevel;
+        // promìnná pro uložení aktuálního stavu paliva vozidla
+     public float fuelLevel;
 
     void Update()
     {
@@ -19,7 +21,7 @@ public class Fuel : MonoBehaviour
             // pokud ano, zvýší se stav paliva pozvolna
             fuelLevel = Mathf.Min(fuelLevel + Time.deltaTime, 100f);
         }
-            UIGas.text = vehicle.ToString();
+            UIGas.text = fuelLevel.ToString();
         }
 
     // metoda pro zjištìní, zda vozidlo dotýká palivové stanice
