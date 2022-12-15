@@ -1,4 +1,3 @@
-using GasStation;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,18 +5,13 @@ using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
-
-    /* PARAMETERS - for tuning, typicaliy set in the editor
-     *  CAHCE - e.g referencis for readibility  or speed 
-     *  State -  private instance (member) variables
-     */
-
     [SerializeField] float motorThrust = 500f;
     [SerializeField] float rotationThrust = 1f;
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip mainEngineOff;
     [SerializeField] AudioClip crash;
     [SerializeField] ParticleSystem mainEngineParticle;
+    [SerializeField] ParticleSystem gasRefStation;
     [SerializeField] Text UIGas;
 
     //Fuel-----------------------------------------------------
@@ -25,6 +19,7 @@ public class Movement : MonoBehaviour
     public float Gas = 100.0f;
     public float MaxGas = 100.0f;
     public int playerScore = 0;
+    private float gasPlus = 0.010f;
 
     //public GameObject fuelStation;
     //---------------------------------------------------------
@@ -35,40 +30,11 @@ public class Movement : MonoBehaviour
     Rigidbody myRigidBody;
     AudioSource mySoundSource;
 
-
-    [System.Serializable]
-    private struct GasStation
-    {
-        // make sure the name comes first, it'll serve a special purpose (explained below)
-        [SerializeField]
-        private string _name;
-        [SerializeField]
-        private GameObject[] _prefabs;
-
-        public string Name { get { return _name; } }
-        public GameObject[] Prefabs { get { return _prefabs; } }
-    }
-
-    [SerializeField]
-    private GasStation[] _gasStation;
-
-    //private int myWindZone;
-
-    //TODO Dodìlat Array cyklus pro fuelStation
-    //[System.Serializable]
-    //public class Data
-    //{
-    //    public GameObject obj;
-    //    public bool objectBool;
-    //}
-    //public Data[] objs;
-
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
         mySoundSource = GetComponent<AudioSource>();
     }
-
 
     void OnCollisionEnter(Collision collision)
     {
@@ -85,6 +51,12 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
+
+        if (collider.CompareTag("Player"))
+        {
+            gasRefStation.Play();
+        }
+        
         switch (collider.gameObject.layer)
         {
             case 10:
@@ -96,6 +68,31 @@ public class Movement : MonoBehaviour
                 //plusMotorThrust();
                 break;
 
+        }
+    }
+
+    private void OnTriggerExit(Collider collider)
+    {
+
+        if (collider.CompareTag("Player"))
+        {
+            gasRefStation.Stop();
+        }
+       
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Fuel"))
+        {
+            // pokud ano, zvýší se stav paliva pozvolna
+            if (Gas < MaxGas)
+            {
+                Gas += gasPlus;
+                UIGas.text = $"FUEL: {(int)Gas % 1000:0}";
+                gasRefStation.Play();
+            }
+            
         }
     }
     void FixedUpdate()
@@ -127,8 +124,8 @@ public class Movement : MonoBehaviour
         //    Gas = Mathf.Min(Gas + Time.deltaTime, 100f);
         //}
 
-        UIGas.text = Gas.ToString();
-
+        //UIGas.text ={(int)Gas.ToString()};
+        UIGas.text = $"FUEL: {(int)Gas % 1000:0}";
     }
     void ProcessThrust()
     {
@@ -178,12 +175,9 @@ public class Movement : MonoBehaviour
     //{
     //    // získání Collider komponenty vozidla
     //    Collider vehicleCollider = GetComponent<Collider>();
-
     //    // získání Collider komponenty palivové stanice
     //    Collider fuelStationCollider = fuelStation.GetComponent<Collider>();
-
     //    // zjištìní, zda vozidlo a palivová stanice se dotýkají
     //    return vehicleCollider.bounds.Intersects(fuelStationCollider.bounds);
     //}
-
 }

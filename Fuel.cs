@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GasStation{
+
 public class Fuel : MonoBehaviour
 {
     // referenèní promìnná na palivovou stanici
@@ -37,6 +37,4 @@ public class Fuel : MonoBehaviour
         return vehicleCollider.bounds.Intersects(fuelStationCollider.bounds);
 
     }
-}
-
 }
