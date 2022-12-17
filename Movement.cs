@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] float motorThrust = 500f;
+    [SerializeField] float motorThrust = 1000f;
+    [SerializeField] float rightThrust = 300f;
+    [SerializeField] float leftThrust = 300f;
     [SerializeField] float rotationThrust = 1f;
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip mainEngineOff;
@@ -16,9 +18,9 @@ public class Movement : MonoBehaviour
 
     //Fuel-----------------------------------------------------
     //
-    public float Gas = 100.0f;
-    public float MaxGas = 100.0f;
-    public int playerScore = 0;
+    [SerializeField] float Gas = 100.0f;
+    [SerializeField] float MaxGas = 100.0f;
+    [SerializeField] int playerScore = 0;
     private float gasPlus = 0.010f;
 
     //public GameObject fuelStation;
@@ -73,12 +75,10 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerExit(Collider collider)
     {
-
         if (collider.CompareTag("Player"))
         {
             gasRefStation.Stop();
         }
-       
     }
 
     void OnTriggerStay(Collider other)
@@ -98,11 +98,14 @@ public class Movement : MonoBehaviour
     void FixedUpdate()
     {
         bool isFlying = Input.GetKey(KeyCode.Space);
+        bool isFlyingLeft = Input.GetKey(KeyCode.A);
+        bool isFlyingRight = Input.GetKey(KeyCode.D);
 
         if (Gas != 0)
         {
             mySoundSource.UnPause();
             ProcessThrust();
+            SidewaysMovement();
         }
         else if (Gas == 0)
         {
@@ -112,22 +115,14 @@ public class Movement : MonoBehaviour
 
         ProcessRotation();   
 
-        if (isFlying)
+        if (isFlying || isFlyingLeft || isFlyingRight)
         {
             Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
         }
 
-        // pokud se vozidlo dotýká palivové stanice a má ménì paliva než je plná hodnota
-        //if (IsTouchingFuelStation() && Gas < MaxGas)
-        //{
-        //    // pokud ano, zvýší se stav paliva pozvolna
-        //    Gas = Mathf.Min(Gas + Time.deltaTime, 100f);
-        //}
-
-        //UIGas.text ={(int)Gas.ToString()};
         UIGas.text = $"FUEL: {(int)Gas % 1000:0}";
     }
-    void ProcessThrust()
+    private void ProcessThrust()
     {
       
         if (Input.GetKey(KeyCode.Space))
@@ -139,15 +134,28 @@ public class Movement : MonoBehaviour
             StopThrusting();
         }  
     }
-    void ProcessRotation()
+    private void ProcessRotation()
     {
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.Q))
         {
             ApplyRotation(rotationThrust);
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.E))
         {
             ApplyRotation(-rotationThrust);
+        }
+       
+    }
+    private void SidewaysMovement()
+    {
+      
+        if (Input.GetKey(KeyCode.A))
+        {
+            LeftTrhusting();
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            RightThrustin();
         }
     }
     private void StartThrusting()
@@ -158,6 +166,28 @@ public class Movement : MonoBehaviour
         {
             mainEngineParticle.Play();
              mySoundSource.PlayOneShot(mainEngine);
+        }
+    }
+    private void LeftTrhusting()
+    {
+       
+        myRigidBody.AddRelativeForce(Vector3.left * leftThrust * Time.fixedDeltaTime);
+
+        if (!mySoundSource.isPlaying)
+        {
+            mainEngineParticle.Play();
+            mySoundSource.PlayOneShot(mainEngine);
+        }
+    }
+    private void RightThrustin()
+    {
+
+        myRigidBody.AddRelativeForce(Vector3.right * rightThrust * Time.fixedDeltaTime);
+
+        if (!mySoundSource.isPlaying)
+        {
+            mainEngineParticle.Play();
+            mySoundSource.PlayOneShot(mainEngine);
         }
     }
     private void StopThrusting()
@@ -171,13 +201,4 @@ public class Movement : MonoBehaviour
         transform.Rotate(rotationThisFrame * Time.deltaTime * Vector3.forward);
         myRigidBody.freezeRotation = false; // zakaze manualni rotaci
     }
-    //bool IsTouchingFuelStation()
-    //{
-    //    // získání Collider komponenty vozidla
-    //    Collider vehicleCollider = GetComponent<Collider>();
-    //    // získání Collider komponenty palivové stanice
-    //    Collider fuelStationCollider = fuelStation.GetComponent<Collider>();
-    //    // zjištìní, zda vozidlo a palivová stanice se dotýkají
-    //    return vehicleCollider.bounds.Intersects(fuelStationCollider.bounds);
-    //}
 }
