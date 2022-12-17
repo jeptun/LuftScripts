@@ -33,7 +33,6 @@ public class Movement : MonoBehaviour
         myRigidBody = GetComponent<Rigidbody>();
         mySoundSource = GetComponent<AudioSource>();
     }
-
     void OnCollisionEnter(Collision collision)
     {
         switch (collision.gameObject.tag)
@@ -46,7 +45,6 @@ public class Movement : MonoBehaviour
                 break;
         }
     }
-
     private void OnTriggerEnter(Collider collider)
     {
 
@@ -68,7 +66,6 @@ public class Movement : MonoBehaviour
 
         //}
     }
-
     private void OnTriggerExit(Collider collider)
     {
         if (collider.CompareTag("Player"))
@@ -76,7 +73,6 @@ public class Movement : MonoBehaviour
             gasRefStation.Stop();
         }
     }
-
     void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Fuel"))
@@ -92,15 +88,13 @@ public class Movement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        bool isFlying = Input.GetKey(KeyCode.Space);
-        bool isFlyingLeft = Input.GetKey(KeyCode.A);
-        bool isFlyingRight = Input.GetKey(KeyCode.D);
-
+      bool keyFlyingUp = Input.GetKey(KeyCode.Space);
+      bool keyFlyingLeft = Input.GetKey(KeyCode.A);
+      bool keyFlyingRight = Input.GetKey(KeyCode.D);
         if (Gas != 0)
         {
             mySoundSource.UnPause();
             ProcessThrust();
-            SidewaysMovement();
         }
         else if (Gas == 0)
         {
@@ -110,7 +104,7 @@ public class Movement : MonoBehaviour
 
         ProcessRotation();   
 
-        if (isFlying || isFlyingLeft || isFlyingRight)
+        if (keyFlyingUp || keyFlyingLeft || keyFlyingRight)
         {
             Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
         }
@@ -123,6 +117,14 @@ public class Movement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             StartThrusting();
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            LeftTrhusting();
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            RightThrustin();
         }
         else
         {
@@ -141,18 +143,6 @@ public class Movement : MonoBehaviour
         }
        
     }
-    private void SidewaysMovement()
-    {
-      
-        if (Input.GetKey(KeyCode.A))
-        {
-            LeftTrhusting();
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            RightThrustin();
-        }
-    }
     private void StartThrusting()
     {
         myRigidBody.AddRelativeForce(Vector3.up * motorThrust * Time.fixedDeltaTime);
@@ -165,7 +155,6 @@ public class Movement : MonoBehaviour
     }
     private void LeftTrhusting()
     {
-       
         myRigidBody.AddRelativeForce(Vector3.left * leftThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
@@ -176,7 +165,6 @@ public class Movement : MonoBehaviour
     }
     private void RightThrustin()
     {
-
         myRigidBody.AddRelativeForce(Vector3.right * rightThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
