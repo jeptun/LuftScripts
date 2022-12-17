@@ -6,8 +6,7 @@ using UnityEngine.UI;
 
 public class Coins : MonoBehaviour
 {
-    [SerializeField] GameObject coin;
-    [SerializeField] GameObject vehicle;
+    [SerializeField] int coinValue = 10;
     [SerializeField] AudioClip coinAudioSource;
     [SerializeField] Text uiScore;
     [SerializeField] ParticleSystem coinParticleSystem;
@@ -21,13 +20,6 @@ public class Coins : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -37,11 +29,10 @@ public class Coins : MonoBehaviour
                 var em = coinParticleSystem.emission;
                 var dur = coinParticleSystem.main.duration;
                 activated = true;
-                ScoringSystem.score +=  1;
+                ScoringSystem.score += coinValue;
                 em.enabled = true;
                 audioSource.PlayOneShot(coinAudioSource);
                 coinParticleSystem.Play();
-              //  uiScore.text = score.ToString();
                 Destroy(coinMesh);
                 Invoke(nameof(DestroyCoin), dur);
                

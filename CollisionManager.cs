@@ -1,10 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-public class CollisionHandler : MonoBehaviour
+public class CollisionManager : MonoBehaviour
 {
-
 
     [SerializeField] float LevelLoadDelay = 1f;
     [SerializeField] float delayLevelFinishTime = 2f;
@@ -57,7 +57,7 @@ public class CollisionHandler : MonoBehaviour
         crashParticles.Play();
         audioSource.PlayOneShot(crash);
         GetComponent<Movement>().enabled = false;
-       Invoke(nameof(ReloadLevel), LevelLoadDelay);
+        Invoke(nameof(ReloadLevel), LevelLoadDelay);
     }
     void FinishSequence()
     {
@@ -74,7 +74,7 @@ public class CollisionHandler : MonoBehaviour
         int nextSceneIndex = currentSceneIndex + 1;
         if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
         {
-           nextSceneIndex = 0 ;
+            nextSceneIndex = 0;
         }
         SceneManager.LoadScene(nextSceneIndex);
     }
@@ -82,6 +82,6 @@ public class CollisionHandler : MonoBehaviour
     void ReloadLevel()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentSceneIndex);     
+        SceneManager.LoadScene(currentSceneIndex);
     }
 }

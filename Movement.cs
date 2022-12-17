@@ -10,7 +10,7 @@ public class Movement : MonoBehaviour
     [SerializeField] float rightThrust = 300f;
     [SerializeField] float leftThrust = 300f;
     [SerializeField] float rotationThrust = 1f;
-    [SerializeField] AudioClip motorThrustSound;
+   // [SerializeField] AudioClip motorThrustSound;
     //[SerializeField] AudioClip motorThrustSoundOff;
     [SerializeField] AudioClip crash;
     [SerializeField] ParticleSystem mainEngineParticle;
@@ -23,15 +23,14 @@ public class Movement : MonoBehaviour
     [SerializeField] float gasPlus = 0.010f;
     private const float GasDecreasePerFrame = 1.0f;
     //---------------------------------------------------------
-    [SerializeField] int playerScore = 0;
-    //---------------------------------------------------------
     private Rigidbody myRigidBody;
-    private AudioSource mySoundSource;
+
+    [SerializeField] AudioSource mySoundSource;
 
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
-        mySoundSource = GetComponent<AudioSource>();
+        mySoundSource = GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>();
     }
     void OnCollisionEnter(Collision collision)
     {
@@ -150,7 +149,9 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-             mySoundSource.PlayOneShot(motorThrustSound);
+           // mySoundSource.pitch = Random.Range(.7f, 1.2f);
+            mySoundSource.Play();
+           // mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void LeftTrhusting()
@@ -160,7 +161,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-            mySoundSource.PlayOneShot(motorThrustSound);
+           // mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void RightThrustin()
@@ -170,7 +171,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-            mySoundSource.PlayOneShot(motorThrustSound);
+           // mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void StopThrusting()

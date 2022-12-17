@@ -8,10 +8,6 @@ public class ScoringSystem : MonoBehaviour
     [SerializeField] GameObject scoreText;
     public static int score;
 
-    private void Start()
-    {
-        
-    }
     // Update is called once per frame
     void Update()
     {
