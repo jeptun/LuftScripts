@@ -7,8 +7,7 @@ public class DropColliderDetection : MonoBehaviour
 
     [SerializeField] AudioClip audioSource;
     [SerializeField] GameObject dropObstacle;
-
-    AudioSource obstacleSoundSource;
+    private AudioSource obstacleSoundSource;
 
     private bool activated = false;
     // Start is called before the first frame update
@@ -32,6 +31,7 @@ public class DropColliderDetection : MonoBehaviour
                 activated = true;
                 obstacleSoundSource.PlayOneShot(audioSource);
                 dropObstacle.SetActive(true);
+                dropObstacle.GetComponent<Rigidbody>().AddForce(100, 0, 0);
 
             }
         }

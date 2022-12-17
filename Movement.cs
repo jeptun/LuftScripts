@@ -5,32 +5,28 @@ using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
+    //Movement-------------------------------------------------
     [SerializeField] float motorThrust = 1000f;
     [SerializeField] float rightThrust = 300f;
     [SerializeField] float leftThrust = 300f;
     [SerializeField] float rotationThrust = 1f;
-    [SerializeField] AudioClip mainEngine;
-    [SerializeField] AudioClip mainEngineOff;
+    [SerializeField] AudioClip motorThrustSound;
+    //[SerializeField] AudioClip motorThrustSoundOff;
     [SerializeField] AudioClip crash;
     [SerializeField] ParticleSystem mainEngineParticle;
     [SerializeField] ParticleSystem gasRefStation;
     [SerializeField] Text UIGas;
-
     //Fuel-----------------------------------------------------
-    //
     [SerializeField] float Gas = 100.0f;
     [SerializeField] float MaxGas = 100.0f;
-    [SerializeField] int playerScore = 0;
-    private float gasPlus = 0.010f;
-
-    //public GameObject fuelStation;
-    //---------------------------------------------------------
-   
+    [Range(-1, 1)]
+    [SerializeField] float gasPlus = 0.010f;
     private const float GasDecreasePerFrame = 1.0f;
-    
     //---------------------------------------------------------
-    Rigidbody myRigidBody;
-    AudioSource mySoundSource;
+    [SerializeField] int playerScore = 0;
+    //---------------------------------------------------------
+    private Rigidbody myRigidBody;
+    private AudioSource mySoundSource;
 
     void Start()
     {
@@ -59,18 +55,18 @@ public class Movement : MonoBehaviour
             gasRefStation.Play();
         }
         
-        switch (collider.gameObject.layer)
-        {
-            case 10:
-                Debug.Log("Wind");
-                //minusMotorThrust();
-                break;
-            case 6:
-                Debug.Log("Default");
-                //plusMotorThrust();
-                break;
+        //switch (collider.gameObject.layer)
+        //{
+        //    case 10:
+        //        Debug.Log("Wind");
+        //        //minusMotorThrust();
+        //        break;
+        //    case 6:
+        //        Debug.Log("Default");
+        //        //plusMotorThrust();
+        //        break;
 
-        }
+        //}
     }
 
     private void OnTriggerExit(Collider collider)
@@ -92,7 +88,6 @@ public class Movement : MonoBehaviour
                 UIGas.text = $"FUEL: {(int)Gas % 1000:0}";
                 gasRefStation.Play();
             }
-            
         }
     }
     void FixedUpdate()
@@ -165,7 +160,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-             mySoundSource.PlayOneShot(mainEngine);
+             mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void LeftTrhusting()
@@ -176,7 +171,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-            mySoundSource.PlayOneShot(mainEngine);
+            mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void RightThrustin()
@@ -187,7 +182,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-            mySoundSource.PlayOneShot(mainEngine);
+            mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void StopThrusting()
