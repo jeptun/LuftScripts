@@ -26,7 +26,7 @@ public class Movement : MonoBehaviour
     private Rigidbody myRigidBody;
 
     [SerializeField] AudioSource mySoundSource;
-
+    //TODO optimalizovat zvuk. novou tridou. 
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
@@ -51,19 +51,6 @@ public class Movement : MonoBehaviour
         {
             gasRefStation.Play();
         }
-        
-        //switch (collider.gameObject.layer)
-        //{
-        //    case 10:
-        //        Debug.Log("Wind");
-        //        //minusMotorThrust();
-        //        break;
-        //    case 6:
-        //        Debug.Log("Default");
-        //        //plusMotorThrust();
-        //        break;
-
-        //}
     }
     private void OnTriggerExit(Collider collider)
     {
@@ -149,7 +136,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-           // mySoundSource.pitch = Random.Range(.7f, 1.2f);
+            mySoundSource.pitch = Random.Range(.8f, 1.2f);
             mySoundSource.Play();
            // mySoundSource.PlayOneShot(motorThrustSound);
         }
@@ -161,7 +148,9 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-           // mySoundSource.PlayOneShot(motorThrustSound);
+            mySoundSource.pitch = Random.Range(.8f, 1.2f);
+            mySoundSource.Play();
+            // mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void RightThrustin()
@@ -171,7 +160,9 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-           // mySoundSource.PlayOneShot(motorThrustSound);
+            mySoundSource.pitch = Random.Range(.8f, 1.2f);
+            mySoundSource.Play();
+            // mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void StopThrusting()

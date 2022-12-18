@@ -7,20 +7,19 @@ public class CollisionHandler : MonoBehaviour
 
 
     [SerializeField] float LevelLoadDelay = 1f;
-    [SerializeField] float delayLevelFinishTime = 2f;
     [SerializeField] AudioClip success;
     [SerializeField] AudioClip crash;
 
     [SerializeField] ParticleSystem successParticles;
     [SerializeField] ParticleSystem crashParticles;
 
-    [SerializeField] AudioSource audioSource;
+    private AudioSource audioSource;
+    private ParticleSystem myparticleSystem;
     bool isTransitioning = false;
-
-    //Movement playerScoreInstance = null;
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        myparticleSystem = GetComponentInChildren<ParticleSystem>();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -33,7 +32,6 @@ public class CollisionHandler : MonoBehaviour
                 Debug.Log("Friendly");
                 break;
             case "Finish":
-                FinishSequence();
                 Debug.Log("Finish");
                 break;
             case "Fuel":
@@ -57,28 +55,8 @@ public class CollisionHandler : MonoBehaviour
         crashParticles.Play();
         audioSource.PlayOneShot(crash);
         GetComponent<Movement>().enabled = false;
-       Invoke(nameof(ReloadLevel), LevelLoadDelay);
+        Invoke(nameof(ReloadLevel), LevelLoadDelay);
     }
-    void FinishSequence()
-    {
-        isTransitioning = true;
-        audioSource.Stop();
-        audioSource.PlayOneShot(success);
-        successParticles.Play();
-        GetComponent<Movement>().enabled = false;
-        Invoke(nameof(NextLevel), delayLevelFinishTime);
-    }
-    void NextLevel()
-    {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-        if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
-        {
-           nextSceneIndex = 0 ;
-        }
-        SceneManager.LoadScene(nextSceneIndex);
-    }
-
     void ReloadLevel()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
