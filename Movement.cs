@@ -44,18 +44,20 @@ public class Movement : MonoBehaviour
                 break;
         }
     }
+    //Particle Effect pro pristani k fuel station
     private void OnTriggerEnter(Collider collider)
     {
-
-        if (collider.CompareTag("Player"))
+        if (collider.CompareTag("Fuel"))
         {
+            Debug.Log("Test1");
             gasRefStation.Play();
         }
     }
     private void OnTriggerExit(Collider collider)
     {
-        if (collider.CompareTag("Player"))
+        if (collider.CompareTag("Fuel"))
         {
+            Debug.Log("Test2");
             gasRefStation.Stop();
         }
     }
@@ -68,7 +70,7 @@ public class Movement : MonoBehaviour
             {
                 Gas += gasPlus;
                 UIGas.text = $"FUEL: {(int)Gas % 1000:0}";
-                gasRefStation.Play();
+              
             }
         }
     }

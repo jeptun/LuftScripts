@@ -6,46 +6,49 @@ public class GasRefillSound : MonoBehaviour
 {
     //public GameObject vehicle;
     //public GameObject fuelStation;
-    [SerializeField] AudioClip mainEngineOff;
+   // [SerializeField] AudioClip mainEngineOff;
     [SerializeField] bool activated = false;
+    [SerializeField] ParticleSystem refillParticleSystem;
 
-    AudioSource fuelStationSoundSource;
+    private AudioSource fuelStationSoundSource;
  
         private void Start()
     {
-        fuelStationSoundSource = GetComponent<AudioSource>();
+        fuelStationSoundSource = GameObject.FindGameObjectWithTag("Fuel").GetComponent<AudioSource>();
+        refillParticleSystem = GetComponent<ParticleSystem>();
     }
 
-    private void Update()
-    {
-        if (activated)
-        {
-            fuelStationSoundSource.UnPause();
+    //private void Update()
+    //{
+    //    if (activated)
+    //    {
+    //        fuelStationSoundSource.UnPause();
          
-        }
-        else if (!activated)
-        {
-            fuelStationSoundSource.Pause();
+    //    }
+    //    else if (!activated)
+    //    {
+    //        fuelStationSoundSource.Pause();
             
-        }
-    }
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider collider)
     {
+       
         if (collider.CompareTag("Player"))
         {
             if (!activated)
             {
                 activated = true;
-                fuelStationSoundSource.PlayOneShot(mainEngineOff);
+                fuelStationSoundSource.Play();
             }
         }
     }
 
     private void OnTriggerExit(Collider collider)
     {
-        
-        fuelStationSoundSource.Pause();
+
+        fuelStationSoundSource.Stop();
         activated = false;
     }
 
