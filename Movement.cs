@@ -22,7 +22,11 @@ public class Movement : MonoBehaviour
     [Range(-1, 1)]
     [SerializeField] float gasPlus = 0.010f;
     private const float GasDecreasePerFrame = 1.0f;
-    //---------------------------------------------------------
+    //RespawnPoint---------------------------------------------
+    [Header("Respawn Point")]
+    [SerializeField] private Transform respawnPoint;
+
+
     private Rigidbody myRigidBody;
 
     [SerializeField] AudioSource mySoundSource;
@@ -36,11 +40,21 @@ public class Movement : MonoBehaviour
     {
         switch (collision.gameObject.tag)
         {
+            case "Finish":
+                Debug.Log("Finish");
+                break;
+            case "Friendly":
+                Debug.Log("Friendly");
+                break;
             case "Fuel":
                 Debug.Log("Fuel");
                 break;
             case "Gold":
                 Debug.Log("gold");
+                break;
+            default:
+                Respawn();
+                Debug.Log("Sorry");
                 break;
         }
     }
@@ -98,6 +112,13 @@ public class Movement : MonoBehaviour
         }
 
         UIGas.text = $"FUEL: {(int)Gas % 1000:0}";
+    }
+    private void Respawn()
+    {
+        // send off event that we died for other components in our system to pick up
+        GameEventsManager.instance.PlayerDeath();
+        // move the player to the respawn point
+        this.transform.position = respawnPoint.position;
     }
     private void ProcessThrust()
     {
