@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
-    //Movement-------------------------------------------------
+    [Header("Movement Params")]
     [SerializeField] float motorThrust = 1000f;
     [SerializeField] float rightThrust = 300f;
     [SerializeField] float leftThrust = 300f;
     [SerializeField] float rotationThrust = 1f;
-   // [SerializeField] AudioClip motorThrustSound;
+     [SerializeField] AudioClip motorThrustSound;
     //[SerializeField] AudioClip motorThrustSoundOff;
-    [SerializeField] AudioClip crash;
+    [SerializeField] ParticleSystem crashParticles;
     [SerializeField] ParticleSystem mainEngineParticle;
     [SerializeField] ParticleSystem gasRefStation;
     [SerializeField] Text UIGas;
@@ -25,17 +25,30 @@ public class Movement : MonoBehaviour
     //RespawnPoint---------------------------------------------
     [Header("Respawn Point")]
     [SerializeField] private Transform respawnPoint;
+    [SerializeField] private Transform rotationPoint;
 
+    private bool disableMovement = false;
 
     private Rigidbody myRigidBody;
+    private BoxCollider boxColl;
+    private SphereCollider sphereColl;
+    public MeshRenderer meshRenderer;
 
-    [SerializeField] AudioSource mySoundSource;
+    private AudioSource mySoundSource;
     //TODO optimalizovat zvuk. novou tridou. 
-    void Start()
+
+    private void Awake()
+    {
+        boxColl = GetComponent<BoxCollider>();
+        sphereColl = GetComponent<SphereCollider>();
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+    }
+        void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
-        mySoundSource = GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>();
+        mySoundSource = GetComponent<AudioSource>();
     }
+
     void OnCollisionEnter(Collision collision)
     {
         switch (collision.gameObject.tag)
@@ -53,8 +66,8 @@ public class Movement : MonoBehaviour
                 Debug.Log("gold");
                 break;
             default:
-                Respawn();
-                Debug.Log("Sorry");
+                StartCoroutine(HandleDeath());
+                Debug.Log("Sorre2y");
                 break;
         }
     }
@@ -88,13 +101,16 @@ public class Movement : MonoBehaviour
             }
         }
     }
+
     void FixedUpdate()
     {
       bool keyFlyingUp = Input.GetKey(KeyCode.Space);
       bool keyFlyingLeft = Input.GetKey(KeyCode.A);
       bool keyFlyingRight = Input.GetKey(KeyCode.D);
+       
         if (Gas != 0)
         {
+          
             mySoundSource.UnPause();
             ProcessThrust();
         }
@@ -113,12 +129,42 @@ public class Movement : MonoBehaviour
 
         UIGas.text = $"FUEL: {(int)Gas % 1000:0}";
     }
-    private void Respawn()
+
+    private IEnumerator HandleDeath()
     {
+   
+        disableMovement = true;
+        // freeze player movemet
+        myRigidBody.useGravity = false;
+        myRigidBody.velocity = Vector3.zero;
+        // prevent other collisions
+        // boxColl.enabled = false;
+       // sphereColl.enabled = false;
+        mainEngineParticle.Stop();
+        crashParticles.Play();
+        Debug.Log("Hihihi");
+      
         // send off event that we died for other components in our system to pick up
         GameEventsManager.instance.PlayerDeath();
+
+        yield return new WaitForSeconds(1.4f);
+       // mySoundSource.Stop();
+        meshRenderer.enabled = false;
+        Respawn();
+    }
+    private void Respawn()
+    {
+        
+        disableMovement = false;
+        myRigidBody.useGravity = true;
+        boxColl.enabled = true;
+        sphereColl.enabled = true;
+        crashParticles.Stop();
+        meshRenderer.enabled = true;
+        Debug.Log("hehe");
         // move the player to the respawn point
         this.transform.position = respawnPoint.position;
+        this.transform.rotation = rotationPoint.rotation;
     }
     private void ProcessThrust()
     {
@@ -159,9 +205,9 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-            mySoundSource.pitch = Random.Range(.8f, 1.2f);
-            mySoundSource.Play();
-           // mySoundSource.PlayOneShot(motorThrustSound);
+          //  mySoundSource.pitch = Random.Range(.8f, 1.2f);
+           // mySoundSource.Play();
+            mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void LeftTrhusting()
@@ -171,9 +217,9 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-            mySoundSource.pitch = Random.Range(.8f, 1.2f);
-            mySoundSource.Play();
-            // mySoundSource.PlayOneShot(motorThrustSound);
+           // mySoundSource.pitch = Random.Range(.8f, 1.2f);
+           // mySoundSource.Play();
+            mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void RightThrustin()
@@ -183,9 +229,9 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-            mySoundSource.pitch = Random.Range(.8f, 1.2f);
-            mySoundSource.Play();
-            // mySoundSource.PlayOneShot(motorThrustSound);
+           // mySoundSource.pitch = Random.Range(.8f, 1.2f);
+           // mySoundSource.Play();
+            mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void StopThrusting()
