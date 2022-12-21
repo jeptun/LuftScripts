@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviour, IDataPersistence
 {
     [Header("Movement Params")]
     [SerializeField] float motorThrust = 1000f;
@@ -18,7 +18,7 @@ public class Movement : MonoBehaviour
     [SerializeField] ParticleSystem gasRefStation;
     [SerializeField] Text UIGas;
     //Fuel-----------------------------------------------------
-    [SerializeField] float Gas = 100.0f;
+    [SerializeField] float Gas = 10f;
     [SerializeField] float MaxGas = 100.0f;
     [Range(-1, 1)]
     [SerializeField] float gasPlus = 0.010f;
@@ -68,7 +68,7 @@ public class Movement : MonoBehaviour
                 break;
             default:
                 StartCoroutine(HandleDeath());
-                Debug.Log("Sorre2y");
+                Debug.Log("Sorry");
                 break;
         }
     }
@@ -77,7 +77,6 @@ public class Movement : MonoBehaviour
     {
         if (collider.CompareTag("Fuel"))
         {
-            Debug.Log("Test1");
             gasRefStation.Play();
         }
     }
@@ -85,7 +84,6 @@ public class Movement : MonoBehaviour
     {
         if (collider.CompareTag("Fuel"))
         {
-            Debug.Log("Test2");
             gasRefStation.Stop();
         }
     }
@@ -101,6 +99,17 @@ public class Movement : MonoBehaviour
               
             }
         }
+    }
+
+    public void LoadData(GameData data)
+    {
+        this.transform.position = data.playerPosition;
+        this.Gas = data.saveGas;
+    }
+    public void SaveData(ref GameData data)
+    {
+        data.playerPosition = this.transform.position;
+        data.saveGas = this.Gas;
     }
 
     void FixedUpdate()
@@ -144,7 +153,6 @@ public class Movement : MonoBehaviour
         sphereColl.enabled = false;
         mainEngineParticle.Stop();
         crashParticles.Play();
-        Debug.Log("Hihihi");
         mySoundSource.pitch = 1;
         mySoundSource.Stop();
         mySoundSource.PlayOneShot(crashSound);
@@ -164,7 +172,6 @@ public class Movement : MonoBehaviour
         sphereColl.enabled = true;
         crashParticles.Stop();
         meshRenderer.enabled = true;
-        Debug.Log("hehe");
         // move the player to the respawn point
         movement.enabled = true;
         this.transform.position = respawnPoint.position;

@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 
 
-public class CoinsCollectedText : MonoBehaviour
+public class CoinsCollectedText : MonoBehaviour,IDataPersistence
 {
     [SerializeField] private int totalCoins = 0;
 
@@ -23,6 +23,21 @@ public class CoinsCollectedText : MonoBehaviour
         GameEventsManager.instance.onCoinCollected += OnCoinCollected;
     }
 
+    public void LoadData(GameData data)
+    {
+        foreach(KeyValuePair<string, bool> pair in data.coinsCollected)
+        {
+            if (pair.Value)
+            {
+                coinsCollected++;
+            }
+        }
+    }
+
+    public void SaveData(ref GameData data)
+    {
+
+    }
     private void OnDestroy()
     {
         // unsubscribe from events
@@ -36,6 +51,6 @@ public class CoinsCollectedText : MonoBehaviour
 
     private void Update()
     {
-        coinsCollectedText.text = coinsCollected + " / " + totalCoins;
+        coinsCollectedText.text ="COINS: " + coinsCollected + " / " + totalCoins;
     }
 }

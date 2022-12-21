@@ -42,6 +42,6 @@ public class DeathsCountText : MonoBehaviour, IDataPersistence
 
     private void Update()
     {
-        deathCountText.text = "" + deathCount;
+        deathCountText.text = "DEATH: " + deathCount;
     }
 }
