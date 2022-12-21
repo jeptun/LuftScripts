@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class DeathsCountText : MonoBehaviour
+public class DeathsCountText : MonoBehaviour, IDataPersistence
 {
 
     private int deathCount = 0;
@@ -13,6 +13,14 @@ public class DeathsCountText : MonoBehaviour
     private void Awake()
     {
         deathCountText = this.GetComponent<TextMeshProUGUI>();
+    }
+    public void LoadData(GameData data)
+    {
+        this.deathCount = data.deathCount;
+    }
+    public void SaveData(ref GameData data)
+    {
+        data.deathCount = this.deathCount;
     }
 
     private void Start()

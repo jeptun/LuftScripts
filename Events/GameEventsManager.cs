@@ -25,12 +25,12 @@ public class GameEventsManager : MonoBehaviour
         }
     }
 
-    //public event Action onCoinCollected;
-    //public void CoinCollected()
-    //{
-    //    if (onCoinCollected != null)
-    //    {
-    //        onCoinCollected();
-    //    }
-    //}
+    public event Action onCoinCollected;
+    public void CoinCollected()
+    {
+        if (onCoinCollected != null)
+        {
+            onCoinCollected();
+        }
+    }
 }

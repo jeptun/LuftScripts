@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour
     [SerializeField] float leftThrust = 300f;
     [SerializeField] float rotationThrust = 1f;
      [SerializeField] AudioClip motorThrustSound;
+    [SerializeField] AudioClip crashSound;
     //[SerializeField] AudioClip motorThrustSoundOff;
     [SerializeField] ParticleSystem crashParticles;
     [SerializeField] ParticleSystem mainEngineParticle;
@@ -27,11 +28,10 @@ public class Movement : MonoBehaviour
     [SerializeField] private Transform respawnPoint;
     [SerializeField] private Transform rotationPoint;
 
-    private bool disableMovement = false;
-
     private Rigidbody myRigidBody;
     private BoxCollider boxColl;
     private SphereCollider sphereColl;
+    private Movement movement;
     public MeshRenderer meshRenderer;
 
     private AudioSource mySoundSource;
@@ -41,6 +41,7 @@ public class Movement : MonoBehaviour
     {
         boxColl = GetComponent<BoxCollider>();
         sphereColl = GetComponent<SphereCollider>();
+        movement = GetComponent<Movement>();
         meshRenderer = GetComponentInChildren<MeshRenderer>();
     }
         void Start()
@@ -132,30 +133,32 @@ public class Movement : MonoBehaviour
 
     private IEnumerator HandleDeath()
     {
-   
-        disableMovement = true;
+
         // freeze player movemet
+        movement.enabled = false;
         myRigidBody.useGravity = false;
         myRigidBody.velocity = Vector3.zero;
+
         // prevent other collisions
-        // boxColl.enabled = false;
-       // sphereColl.enabled = false;
+         boxColl.enabled = false;
+        sphereColl.enabled = false;
         mainEngineParticle.Stop();
         crashParticles.Play();
         Debug.Log("Hihihi");
-      
+        mySoundSource.pitch = 1;
+        mySoundSource.Stop();
+        mySoundSource.PlayOneShot(crashSound);
+        meshRenderer.enabled = false;
+        this.transform.rotation = rotationPoint.rotation;
+        this.transform.Rotate(0,0,0);
         // send off event that we died for other components in our system to pick up
         GameEventsManager.instance.PlayerDeath();
 
-        yield return new WaitForSeconds(1.4f);
-       // mySoundSource.Stop();
-        meshRenderer.enabled = false;
+        yield return new WaitForSeconds(2.0f);
         Respawn();
     }
     private void Respawn()
     {
-        
-        disableMovement = false;
         myRigidBody.useGravity = true;
         boxColl.enabled = true;
         sphereColl.enabled = true;
@@ -163,8 +166,10 @@ public class Movement : MonoBehaviour
         meshRenderer.enabled = true;
         Debug.Log("hehe");
         // move the player to the respawn point
+        movement.enabled = true;
         this.transform.position = respawnPoint.position;
         this.transform.rotation = rotationPoint.rotation;
+        
     }
     private void ProcessThrust()
     {
@@ -205,7 +210,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-          //  mySoundSource.pitch = Random.Range(.8f, 1.2f);
+            mySoundSource.pitch = Random.Range(.8f, 1.2f);
            // mySoundSource.Play();
             mySoundSource.PlayOneShot(motorThrustSound);
         }
@@ -217,7 +222,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-           // mySoundSource.pitch = Random.Range(.8f, 1.2f);
+            mySoundSource.pitch = Random.Range(.8f, 1.2f);
            // mySoundSource.Play();
             mySoundSource.PlayOneShot(motorThrustSound);
         }
@@ -229,7 +234,7 @@ public class Movement : MonoBehaviour
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
-           // mySoundSource.pitch = Random.Range(.8f, 1.2f);
+            mySoundSource.pitch = Random.Range(.8f, 1.2f);
            // mySoundSource.Play();
             mySoundSource.PlayOneShot(motorThrustSound);
         }
