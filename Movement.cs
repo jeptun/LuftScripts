@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour, IDataPersistence
 {
@@ -106,10 +107,23 @@ public class Movement : MonoBehaviour, IDataPersistence
         this.transform.position = data.playerPosition;
         this.Gas = data.saveGas;
     }
-    public void SaveData(ref GameData data)
+    public void SaveData(GameData data)
     {
         data.playerPosition = this.transform.position;
         data.saveGas = this.Gas;
+    }
+
+    private void Update()
+    {
+        // below code just used to test exiting the scene,
+        // you probably wouldn't want to actually do this as part of your character controller script.
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // save the game anytime before loading a new scene
+            DataPersistenceManager.instance.SaveGame();
+            // load the main menu scene
+            SceneManager.LoadSceneAsync("Menu");
+        }
     }
 
     void FixedUpdate()

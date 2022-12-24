@@ -34,7 +34,7 @@ public class CoinsCollectedText : MonoBehaviour,IDataPersistence
         }
     }
 
-    public void SaveData(ref GameData data)
+    public void SaveData( GameData data)
     {
 
     }
