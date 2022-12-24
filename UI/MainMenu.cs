@@ -40,7 +40,7 @@ public class MainMenu : Menu
     public void ContinueGame()
     {
         DisableMenuButtons();
-        DataPersistenceManager.instance.GetSavedSceneName();
+        DataPersistenceManager.instance.SaveGame();
         // load the next scene - which will in turn load the game because of 
         // OnSceneLoaded() in the DataPersistenceManager
         SceneManager.LoadSceneAsync("Level1");

@@ -79,7 +79,8 @@ public class SaveSlotsMenu : Menu
         }
 
         // set the first selected button
-        StartCoroutine(this.SetFirstSelected(firstSelected));
+        Button firstSelectedButton = firstSelected.GetComponent<Button>();
+        this.SetFirstSelected(firstSelectedButton);
     }
 
     public void DeactivateMenu()
