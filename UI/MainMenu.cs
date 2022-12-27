@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
 public class MainMenu : Menu
 {
     [Header("Menu Navigation")]
@@ -24,7 +23,7 @@ public class MainMenu : Menu
         }
     }
 
-    public void PlayGame()
+    public void OnNewGameClicked()
     {
         saveSlotsMenu.ActivateMenu(false);
         this.DeactivateMenu();
@@ -36,15 +35,13 @@ public class MainMenu : Menu
         this.DeactivateMenu();
     }
 
-
-    public void ContinueGame()
+    public void OnContinueGameClicked()
     {
         DisableMenuButtons();
         DataPersistenceManager.instance.SaveGame();
         // load the next scene - which will in turn load the game because of 
         // OnSceneLoaded() in the DataPersistenceManager
         SceneManager.LoadSceneAsync("Level1");
-
     }
 
     private void DisableMenuButtons()
@@ -62,6 +59,7 @@ public class MainMenu : Menu
     {
         this.gameObject.SetActive(false);
     }
+
     public void QuitGame()
     {
         Debug.Log("QuitLog");

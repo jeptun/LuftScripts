@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
-public class FileDataHandler 
+
+public class FileDataHandler
 {
     private string dataDirPath = "";
     private string dataFileName = "";

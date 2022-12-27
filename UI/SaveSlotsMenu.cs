@@ -34,6 +34,7 @@ public class SaveSlotsMenu : Menu
             // create a new game - which will initialize our data to a clean slate
             DataPersistenceManager.instance.NewGame();
         }
+
         DataPersistenceManager.instance.SaveGame();
         // load the scene - which will in turn save the game because of OnSceneUnloaded() in the DataPersistenceManager
         SceneManager.LoadSceneAsync("Level1");
@@ -45,19 +46,18 @@ public class SaveSlotsMenu : Menu
         this.DeactivateMenu();
     }
 
-
     public void ActivateMenu(bool isLoadingGame)
     {
-        //// set this menu to be active
+        // set this menu to be active
         this.gameObject.SetActive(true);
 
-        //// set mode
-        //this.isLoadingGame = isLoadingGame;
+        // set mode
+        this.isLoadingGame = isLoadingGame;
 
         // load all of the profiles that exist
         Dictionary<string, GameData> profilesGameData = DataPersistenceManager.instance.GetAllProfilesGameData();
 
-        //// loop through each save slot in the UI and set the content appropriately
+        // loop through each save slot in the UI and set the content appropriately
         GameObject firstSelected = backButton.gameObject;
         foreach (SaveSlot saveSlot in saveSlots)
         {
@@ -77,6 +77,7 @@ public class SaveSlotsMenu : Menu
                 }
             }
         }
+
 
         // set the first selected button
         Button firstSelectedButton = firstSelected.GetComponent<Button>();
