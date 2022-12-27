@@ -37,18 +37,18 @@ public class MainMenu : Menu
 
     public void OnContinueGameClicked()
     {
-        DisableMenuButtons();
+        //DisableMenuButtons();
         DataPersistenceManager.instance.SaveGame();
         // load the next scene - which will in turn load the game because of 
         // OnSceneLoaded() in the DataPersistenceManager
-        SceneManager.LoadSceneAsync("Level1");
+        SceneManager.LoadSceneAsync(DataPersistenceManager.instance.GetSavedSceneName());
     }
 
-    private void DisableMenuButtons()
-    {
-        newGameButton.interactable = false;
-        continueGameButton.interactable = false;
-    }
+    //private void DisableMenuButtons()
+    //{
+    //    newGameButton.interactable = false;
+    //    continueGameButton.interactable = false;
+    //}
 
     public void ActivateMenu()
     {
@@ -60,7 +60,7 @@ public class MainMenu : Menu
         this.gameObject.SetActive(false);
     }
 
-    public void QuitGame()
+        public void QuitGame()
     {
         Debug.Log("QuitLog");
         Application.Quit();

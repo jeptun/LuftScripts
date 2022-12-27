@@ -134,8 +134,29 @@ public class DataPersistenceManager : MonoBehaviour
         // timestamp the data so we know when it was last saved
         gameData.lastUpdated = System.DateTime.Now.ToBinary();
 
+        // update the current scene in our data
+        Scene scene = SceneManager.GetActiveScene();
+        // DON'T save this for certain scenes, like our main menu scene
+        if (!scene.name.Equals("Menu"))
+        {
+            gameData.currentSceneName = scene.name;
+        }
+     
         // save that data to a file using the data handler
         dataHandler.Save(gameData, selectedProfileId);
+    }
+
+    public string GetSavedSceneName()
+    {
+        // error out and return null if we don't have any game data yet
+        if (gameData == null)
+        {
+            Debug.LogError("Tried to get scene name but data was null.");
+            return null;
+        }
+
+        // otherwise, return that value from our data
+        return gameData.currentSceneName;
     }
 
     private void OnApplicationQuit()
