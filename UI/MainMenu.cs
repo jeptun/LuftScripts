@@ -37,7 +37,7 @@ public class MainMenu : Menu
 
     public void OnContinueGameClicked()
     {
-        //DisableMenuButtons();
+        // DisableMenuButtons();
         DataPersistenceManager.instance.SaveGame();
         // load the next scene - which will in turn load the game because of 
         // OnSceneLoaded() in the DataPersistenceManager
@@ -50,7 +50,7 @@ public class MainMenu : Menu
     //    continueGameButton.interactable = false;
     //}
 
-    public void ActivateMenu()
+public void ActivateMenu()
     {
         this.gameObject.SetActive(true);
     }
