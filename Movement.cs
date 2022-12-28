@@ -67,6 +67,9 @@ public class Movement : MonoBehaviour, IDataPersistence
             case "Gold":
                 Debug.Log("gold");
                 break;
+            case "NPC":
+                Debug.Log("NPC");
+                break;
             default:
                 StartCoroutine(HandleDeath());
                 Debug.Log("Sorry");
@@ -113,8 +116,12 @@ public class Movement : MonoBehaviour, IDataPersistence
         data.saveGas = this.Gas;
     }
 
-    private void Update()
+    void FixedUpdate()
     {
+      bool keyFlyingUp = Input.GetKey(KeyCode.Space);
+      bool keyFlyingLeft = Input.GetKey(KeyCode.A);
+      bool keyFlyingRight = Input.GetKey(KeyCode.D);
+
         // below code just used to test exiting the scene,
         // you probably wouldn't want to actually do this as part of your character controller script.
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -124,14 +131,13 @@ public class Movement : MonoBehaviour, IDataPersistence
             // load the main menu scene
             SceneManager.LoadSceneAsync("Menu");
         }
-    }
 
-    void FixedUpdate()
-    {
-      bool keyFlyingUp = Input.GetKey(KeyCode.Space);
-      bool keyFlyingLeft = Input.GetKey(KeyCode.A);
-      bool keyFlyingRight = Input.GetKey(KeyCode.D);
-       
+        if (DialogueManager.GetInstance().dialogueIsPlaying)
+        {
+            return;
+
+        }
+        
         if (Gas != 0)
         {
           
@@ -163,7 +169,7 @@ public class Movement : MonoBehaviour, IDataPersistence
         myRigidBody.velocity = Vector3.zero;
 
         // prevent other collisions
-         boxColl.enabled = false;
+        boxColl.enabled = false;
         sphereColl.enabled = false;
         mainEngineParticle.Stop();
         crashParticles.Play();
