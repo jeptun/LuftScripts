@@ -8,6 +8,7 @@ public class Movement : MonoBehaviour, IDataPersistence
 {
     [Header("Movement Params")]
     [SerializeField] float motorThrust = 1000f;
+    [SerializeField] float smallupThrust = 500f;
     [SerializeField] float rightThrust = 500f;
     [SerializeField] float leftThrust = 500f;
     [SerializeField] float forvardThrust = 500f;
@@ -255,9 +256,14 @@ public class Movement : MonoBehaviour, IDataPersistence
             mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
+    //private void SmallupThrusting()
+    //{
+    //    myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
+    //}
     private void ForwardTrhusting()
     {
         myRigidBody.AddRelativeForce(Vector3.right * forvardThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
         {
@@ -270,6 +276,7 @@ public class Movement : MonoBehaviour, IDataPersistence
     private void BackThrusting()
     {
         myRigidBody.AddRelativeForce(Vector3.left * backThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
         {
@@ -282,6 +289,7 @@ public class Movement : MonoBehaviour, IDataPersistence
     private void LeftTrhusting()
     {
         myRigidBody.AddRelativeForce(Vector3.forward * leftThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
         {
@@ -294,6 +302,7 @@ public class Movement : MonoBehaviour, IDataPersistence
     private void RightThrustin()
     {
         myRigidBody.AddRelativeForce(Vector3.back * rightThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
         {
