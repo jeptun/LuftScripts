@@ -8,8 +8,10 @@ public class Movement : MonoBehaviour, IDataPersistence
 {
     [Header("Movement Params")]
     [SerializeField] float motorThrust = 1000f;
-    [SerializeField] float rightThrust = 300f;
-    [SerializeField] float leftThrust = 300f;
+    [SerializeField] float rightThrust = 500f;
+    [SerializeField] float leftThrust = 500f;
+    [SerializeField] float forvardThrust = 500f;
+    [SerializeField] float backThrust = 500f;
     [SerializeField] float rotationThrust = 1f;
      [SerializeField] AudioClip motorThrustSound;
     [SerializeField] AudioClip crashSound;
@@ -121,6 +123,8 @@ public class Movement : MonoBehaviour, IDataPersistence
       bool keyFlyingUp = Input.GetKey(KeyCode.Space);
       bool keyFlyingLeft = Input.GetKey(KeyCode.A);
       bool keyFlyingRight = Input.GetKey(KeyCode.D);
+        bool keyFlyingFrwd = Input.GetKey(KeyCode.W);
+        bool keyFlyingBack = Input.GetKey(KeyCode.S);
 
         // below code just used to test exiting the scene,
         // you probably wouldn't want to actually do this as part of your character controller script.
@@ -150,9 +154,9 @@ public class Movement : MonoBehaviour, IDataPersistence
             mainEngineParticle.Stop();
         }
 
-        ProcessRotation();   
+       // ProcessRotation();   
 
-        if (keyFlyingUp || keyFlyingLeft || keyFlyingRight)
+        if (keyFlyingUp || keyFlyingLeft || keyFlyingRight || keyFlyingFrwd || keyFlyingBack)
         {
             Gas = Mathf.Clamp(Gas - (GasDecreasePerFrame * Time.deltaTime), 0.0f, MaxGas);
         }
@@ -213,11 +217,20 @@ public class Movement : MonoBehaviour, IDataPersistence
         {
             RightThrustin();
         }
+        else if (Input.GetKey(KeyCode.W))
+        {
+            ForwardTrhusting();
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            BackThrusting();
+        }
         else
         {
             StopThrusting();
         }  
     }
+    //Vypnuto
     private void ProcessRotation()
     {
         if (Input.GetKey(KeyCode.Q))
@@ -242,9 +255,9 @@ public class Movement : MonoBehaviour, IDataPersistence
             mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
-    private void LeftTrhusting()
+    private void ForwardTrhusting()
     {
-        myRigidBody.AddRelativeForce(Vector3.left * leftThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.right * forvardThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
         {
@@ -254,9 +267,33 @@ public class Movement : MonoBehaviour, IDataPersistence
             mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
+    private void BackThrusting()
+    {
+        myRigidBody.AddRelativeForce(Vector3.left * backThrust * Time.fixedDeltaTime);
+
+        if (!mySoundSource.isPlaying)
+        {
+            mainEngineParticle.Play();
+            mySoundSource.pitch = Random.Range(.8f, 1.2f);
+            // mySoundSource.Play();
+            mySoundSource.PlayOneShot(motorThrustSound);
+        }
+    }
+    private void LeftTrhusting()
+    {
+        myRigidBody.AddRelativeForce(Vector3.forward * leftThrust * Time.fixedDeltaTime);
+
+        if (!mySoundSource.isPlaying)
+        {
+            mainEngineParticle.Play();
+            mySoundSource.pitch = Random.Range(.8f, 1.2f);
+            // mySoundSource.Play();
+            mySoundSource.PlayOneShot(motorThrustSound);
+        }
+    }
     private void RightThrustin()
     {
-        myRigidBody.AddRelativeForce(Vector3.right * rightThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.back * rightThrust * Time.fixedDeltaTime);
 
         if (!mySoundSource.isPlaying)
         {
