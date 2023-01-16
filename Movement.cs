@@ -256,27 +256,23 @@ public class Movement : MonoBehaviour, IDataPersistence
             mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
-    //private void SmallupThrusting()
-    //{
-    //    myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
-    //}
     private void ForwardTrhusting()
     {
-        myRigidBody.AddRelativeForce(Vector3.right * forvardThrust * Time.fixedDeltaTime);
-        myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.forward * forvardThrust * Time.fixedDeltaTime);
+
 
         if (!mySoundSource.isPlaying)
         {
             mainEngineParticle.Play();
             mySoundSource.pitch = Random.Range(.8f, 1.2f);
-           // mySoundSource.Play();
+            // mySoundSource.Play();
             mySoundSource.PlayOneShot(motorThrustSound);
         }
     }
     private void BackThrusting()
     {
-        myRigidBody.AddRelativeForce(Vector3.left * backThrust * Time.fixedDeltaTime);
-        myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.back * backThrust * Time.fixedDeltaTime);
+
 
         if (!mySoundSource.isPlaying)
         {
@@ -288,8 +284,8 @@ public class Movement : MonoBehaviour, IDataPersistence
     }
     private void LeftTrhusting()
     {
-        myRigidBody.AddRelativeForce(Vector3.forward * leftThrust * Time.fixedDeltaTime);
-        myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.left * leftThrust * Time.fixedDeltaTime);
+       
 
         if (!mySoundSource.isPlaying)
         {
@@ -301,8 +297,8 @@ public class Movement : MonoBehaviour, IDataPersistence
     }
     private void RightThrustin()
     {
-        myRigidBody.AddRelativeForce(Vector3.back * rightThrust * Time.fixedDeltaTime);
-        myRigidBody.AddRelativeForce(Vector3.up * smallupThrust * Time.fixedDeltaTime);
+        myRigidBody.AddRelativeForce(Vector3.right * rightThrust * Time.fixedDeltaTime);
+    
 
         if (!mySoundSource.isPlaying)
         {
